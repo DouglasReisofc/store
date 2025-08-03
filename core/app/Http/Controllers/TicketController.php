@@ -112,6 +112,11 @@ class TicketController extends Controller
                 }
             }
         }
+        notify($user, 'USER_SUPPORT_TICKET_CREATED', [
+            'ticket_id'      => $ticket->ticket,
+            'ticket_subject' => $ticket->subject,
+            'link'           => route('ticket.view', $ticket->ticket),
+        ]);
         $notify[] = ['success', 'ticket criado com sucesso!'];
         return redirect()->route('ticket')->withNotify($notify);
     }
@@ -202,6 +207,11 @@ class TicketController extends Controller
             $ticket->status = 3;
             $ticket->last_reply = Carbon::now();
             $ticket->save();
+            notify($ticket->user, 'USER_SUPPORT_TICKET_CLOSED', [
+                'ticket_id'      => $ticket->ticket,
+                'ticket_subject' => $ticket->subject,
+                'link'           => route('ticket.view', $ticket->ticket),
+            ]);
             $notify[] = ['success', 'Ticket de suporte fechado com sucesso!'];
         }else{
             $notify[] = ['error','Pedido inválido'];
