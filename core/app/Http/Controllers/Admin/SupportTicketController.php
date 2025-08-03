@@ -119,6 +119,12 @@ class SupportTicketController extends Controller
         } elseif ($request->replayTicket == 2) {
             $ticket->status = 3;
             $ticket->save();
+            $receiver = $ticket->user ?: $ticket;
+            notify($receiver, 'USER_SUPPORT_TICKET_CLOSED', [
+                'ticket_id'      => $ticket->ticket,
+                'ticket_subject' => $ticket->subject,
+                'link'           => route('ticket.view', $ticket->ticket),
+            ]);
             $notify[] = ['success', "Support ticket closed successfully"];
         }
         return back()->withNotify($notify);
