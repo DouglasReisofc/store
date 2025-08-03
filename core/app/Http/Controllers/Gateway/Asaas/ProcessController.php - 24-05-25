@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Http\Controllers\Gateway\Asaas;
+
+use App\Models\Deposit;
+use App\Http\Controllers\Gateway\PaymentController;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log; // Importe a facade Log
+
+class ProcessController extends Controller
+{
+    public static function process($deposit)
+    {
+        $gatewayCurrency = $deposit->gatewayCurrency();
+        $alias = $deposit->gateway->alias;
+        $gatewayAcc = json_decode($gatewayCurrency->gateway_parameter);
+
+        // Dados da cobrança PIX
+        $data = [
+            'description' => 'Payment for deposit',
+            'value' => $deposit->final_amo,
+            'format' => 'ALL',
+            'expirationDate' => null,
+            'expirationSeconds' => null,
+            'allowsMultiplePayments' => true,
+        ];
+
+        // Chamada para gerar o código PIX
+        $response = Http::withHeaders([
+            'accept' => 'application/json',
+            'content-type' => 'application/json',
+            'access_token' => $gatewayAcc->access_token,
+        ])->post('https://api.asaas.com/v3/pix/qrCodes/static', $data);
+
+        // Verificação da resposta da API
+        if ($response->failed()) {
+            throw new \Exception('Erro ao gerar o código PIX: ' . $response->body());
+        }
+
+        $responseData = $response->json();
+
+        // Extrair dados relevantes da resposta
+        $paymentId = $responseData['id'] ?? null;
+        $pixCode = $responseData['payload'] ?? null;
+        $encodedImage = $responseData['encodedImage'] ?? null;
+       // $urlpix = $responseData['link'] ?? null;
+
+        // Verificar se os dados foram obtidos corretamente
+        if (!$paymentId || !$pixCode || !$encodedImage) {
+            throw new \Exception('Não foi possível obter todos os dados necessários para o pagamento PIX.');
+        }
+
+        // Atualizar o depósito no banco de dados
+        $deposit->admin_feedback = $pixCode;
+        $deposit->trx = $paymentId;
+        $deposit->save();
+
+        // Dados para a view
+        $send['data'] = [
+            'paymentId' => $paymentId,
+            'pixCode' => $pixCode,
+            'base64' => $encodedImage,
+        ];
+        $send['view'] = 'user.payment.' . $alias;
+
+        return json_encode($send);
+    }
+
+     public function ipn(Request $request)
+{
+    try {
+        // No Asaas, o 'pixQrCodeId' é utilizado como identificador. Assumindo que está no corpo principal do webhook.
+        $pixQrCodeId = $request->input('payment.pixQrCodeId');
+        $paymentStatus = $request->input('payment.status'); // Exemplo: 'RECEIVED'
+
+        // Localizar o depósito pelo 'trx', que corresponde ao 'pixQrCodeId'
+        $deposit = Deposit::where('trx', $pixQrCodeId)->orderBy('id', 'DESC')->first();
+
+        if (!$deposit) {
+            throw new \Exception('Depósito não encontrado para o QR Code PIX fornecido.');
+        }
+
+        // Checar se o pagamento foi recebido
+        if ($paymentStatus == 'RECEIVED') {
+            // Atualizar os dados do usuário ou depósito conforme necessário
+            // A função 'userDataUpdate' deve ser ajustada para receber o 'pixQrCodeId' como parâmetro, se necessário
+            PaymentController::userDataUpdate($deposit->trx); // Aqui, 'trx' é o 'pixQrCodeId'
+
+            // Registrar uma notificação de sucesso (ajuste conforme necessário)
+            $notify[] = ['success', 'Pagamento via PIX capturado com sucesso.'];
+            // Ajuste a rota de redirecionamento conforme necessário
+            return response()->json(['message' => $notify], 200);
+        } else {
+            // Registrar um erro se o pagamento não for 'RECEIVED'
+            $notify[] = ['error', 'Pagamento via PIX não foi confirmado.'];
+            // Ajuste a rota de redirecionamento conforme necessário
+            return response()->json(['message' => $notify], 200);
+        }
+
+    } catch (\Exception $e) {
+        // Em caso de erro, registrar a exceção e retornar uma resposta apropriada
+        Log::error('Erro no webhook IPN: ' . $e->getMessage());
+        // Ajuste a rota de redirecionamento conforme necessário
+        return response()->json(['error' => 'Ops! Algo deu errado.'], 200);
+    }
+}
+
+}

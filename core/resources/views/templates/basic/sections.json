@@ -1,0 +1,205 @@
+{
+    "banner": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Seção de Banner",
+        "content": {
+            "images":{
+                "image":{
+                    "size":""
+                }
+            },
+            "heading": "text",
+            "sub_heading": "text"
+        }
+    },
+    "choose": {
+        "builder": true,
+        "name": "Seção Por que nos escolher",
+        "content": {
+            "heading": "text",
+            "sub_heading": "text",
+            "button_text": "text",
+            "button_link": "text"
+        },
+        "element": {
+            "title": "text",
+            "description": "textarea",
+            "icon": "icon",
+            "modal": true
+        }
+    },
+    "about": {
+        "builder": true,
+        "name": "Seção Sobre nós",
+        "content": {
+            "images":{
+                "image":{
+                    "size":"985x700"
+                }
+            },
+            "title": "text",
+            "heading": "text",
+            "button_text": "text",
+            "button_link": "text",
+            "description": "textarea"
+        }
+    },
+    "featured": {
+        "builder": true,
+        "name": "Seção em destaque",
+        "content": {
+            "title": "text",
+            "heading": "text",
+            "sub_heading": "text"
+        }
+    },
+    "topSell": {
+        "builder": true,
+        "name": "Seção de cartões mais vendidos",
+        "content": {
+            "title": "text",
+            "heading": "text",
+            "sub_heading": "text"
+        }
+    },
+    "policy_pages": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Páginas de políticas",
+        "element": {
+            "title": "text",
+            "details": "textarea-nic",
+            "modal": true
+        }
+    },
+    "blog": {
+        "builder": true,
+        "name": "Seção do blog",
+        "content": {
+            "title": "text",
+            "heading": "text",
+            "sub_heading": "text"
+        },
+        "element": {
+            "images":{
+                "image":{
+                    "size":"700x450"
+                }
+            },
+            "title": "text",
+            "description": "textarea",
+            "modal": true
+        }
+    },
+    "howToWork": {
+        "builder": true,
+        "name": "Seção Como Trabalhar",
+        "content": {
+            "title": "text",
+            "heading": "text",
+            "sub_heading": "text"
+        },
+        "element": {
+            "text": "text",
+            "icon": "icon",
+            "modal": true
+        }
+    },
+    "social_icon": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Ícones Sociais",
+        "element": {
+            "social_icon": "icon",
+            "url": "text",
+            "modal": true
+        }
+    },
+    "contact_us": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Contate-nos",
+        "content": {
+            "phone": "text",
+            "email": "text",
+            "address": "text",
+            "map_latitude": "text",
+            "map_longitude": "text"
+        }
+    },
+    "testimonial": {
+        "builder": true,
+        "name": "Seção de depoimentos",
+        "content": {
+            "title": "text",
+            "heading": "text",
+            "sub_heading": "text"
+        },
+        "element": {
+            "images":{
+                "image":{
+                    "size":"100x100"
+                }
+            },
+            "name": "text",
+            "designation": "text",
+            "say": "textarea",
+            "rating": "text",
+            "modal": false
+        }
+    },
+    "partner": {
+        "builder": true,
+        "name": "Seção de Parceiros",
+        "element": {
+            "images":{
+                "image":{
+                    "size":"300x150"
+                }
+            },
+            "modal":false
+        }
+    },
+    "footer": {
+        "builder": true,
+        "name": "Seção de rodapé",
+        "no_selection": true,
+        "content": {
+            "text": "text",
+            "copy_right_text": "text"
+        }
+    },
+    "counter": {
+        "builder": true,
+        "no_selection":false,
+        "name": "Seção de Balcão",
+        "element": {
+            "heading": "text",
+            "sub_heading": "text",
+            "icon": "icon",
+            "modal": true
+        }
+    },
+    "header": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Seção de cabeçalho",
+        "content": {
+            "phone": "text",
+            "email": "text"
+        }
+    },
+    "authentication": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Imagem de autenticação",
+        "content":{
+            "images":{
+                "image":{
+                    "size":"1920x1080"
+                }
+            }
+        }
+    }
+}
