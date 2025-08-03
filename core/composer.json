@@ -57,7 +57,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Http/Helpers/helpers.php"
+            "app/Http/Helpers/helpers.php",
+            "overrides/ParameterBag.php"
         ]
     },
     "autoload-dev": {
